@@ -22,8 +22,10 @@ class EvtWindow:
 
     # user entered play and then has to choose file with vocabulary to be able to start game
     def __start_game(self):
-        for dirpath, dirnames, filenames in os.walk(os.getcwd()):   # traversing through directory
-            fop.get_files(filenames)
+        txt_files = []  # list of files with vocabulary
+        for dir_path, dir_names, file_names in os.walk(os.getcwd()):   # traversing through directory
+            fop.get_files(dir_path, file_names, txt_files)
+        print(txt_files)
 
     # this method places start components in window
     def __grid_start_window(self):

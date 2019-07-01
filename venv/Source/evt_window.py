@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as tkm
 import os
 import fileOperations as fOp
 from PIL import Image, ImageTk
@@ -17,6 +18,11 @@ class EvtWindow:
         self.__bPlay.config(font=("Courier", 20))
         self.__bAdd = tk.Button(self.__root, text="Add", command=self.__add_word)
         self.__bAdd.config(font=("Courier", 20))
+
+        # confirm button (will be used later)
+        self.__bConfirm = tk.Button(self.__root, text="Confirm")
+        self.__bConfirm.config(font=("Courier", 15))
+        
         self.__grid_start_window()
         self.__root.tk.mainloop()
 
@@ -29,8 +35,8 @@ class EvtWindow:
     def __add_word(self):
         txt_files = fOp.traverse_directory()  # list of txt files with vocabulary
         self.__clear_start_window()
-        self.__bAddExisting = tk.Button(self.__root, text="Add to existing file", command=self.__txt_files_menu(txt_files))
-        self.__bAddNew = tk.Button(self.__root, text="Add to new file")
+        self.__bAddExisting = tk.Button(self.__root, text="Add to existing file", command=lambda: self.__txt_files_menu(txt_files))
+        self.__bAddNew = tk.Button(self.__root, text="Add to new file", command=self.__get_name)
         self.__bAddExisting.config(font=("Courier", 15))
         self.__bAddNew.config(font=("Courier", 15))
         self.__bAddExisting.grid(row=2, column=0, sticky="NSEW")
@@ -50,9 +56,32 @@ class EvtWindow:
 
     # drop down menu with txt files
     def __txt_files_menu(self, txt_files):
+        # adding button not necessary
+        self.__bAddExisting.grid_forget()
+        self.__bAddNew.grid_forget()
         if txt_files is not None:
+            # label with instruction
+            self.__lDrop_down = tk.Label(text="Choose file")
+            self.__lDrop_down.grid(row=2, column=0)
+            # drop_down menu
             default = tk.StringVar(self.__root)
             default.set(txt_files[0])
             drop_down = tk.OptionMenu(self.__root, default, txt_files)
-            drop_down.grid(row=3, column=0, columnspan=2)
+            drop_down.grid(row=2, column=1)
+            self.__bConfirm.grid(row=3, column=0, columnspan=2)
+        else:
+            tkm.showerror("Error", "Files not found")
+            self.__bPlay.grid(row=2, column=0, sticky="NSEW")
+            self.__bAdd.grid(row=2, column=1, sticky="NSEW")
 
+    # name of new file with vocabulary
+    def __get_name(self):
+        self.__bAddExisting.grid_forget()
+        self.__bAddNew.grid_forget()
+        # label with instruction
+        self.__lNewFile = tk.Label(text="Enter name of file")
+        self.__lNewFile.grid(row=2, column=0)
+        # entry with new name of file
+        self.__eNewFile = tk.Entry(self.__root)
+        self.__eNewFile.grid(row=2, column=1)
+        self.__bConfirm.grid(row=3, column=0, columnspan=2)

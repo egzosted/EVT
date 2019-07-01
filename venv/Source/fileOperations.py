@@ -16,3 +16,11 @@ def get_files(dir_path, file_names, txt_files):
                 txt_files.append(i)
     return txt_files
 
+
+# this function traverse directories to find all files and then find txt
+def traverse_directory():
+    txt_files = []  # list of files with vocabulary
+    for dir_path, dir_names, file_names in os.walk(os.getcwd()):  # traversing through directory
+        get_files(dir_path, file_names, txt_files)
+    return txt_files
+

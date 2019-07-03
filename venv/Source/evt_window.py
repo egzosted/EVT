@@ -22,7 +22,7 @@ class EvtWindow:
         # confirm button (will be used later)
         self.__bConfirm = tk.Button(self.__root, text="Confirm")
         self.__bConfirm.config(font=("Courier", 15))
-        
+
         self.__grid_start_window()
         self.__root.tk.mainloop()
 
@@ -64,10 +64,11 @@ class EvtWindow:
             self.__lDrop_down = tk.Label(text="Choose file")
             self.__lDrop_down.grid(row=2, column=0)
             # drop_down menu
-            default = tk.StringVar(self.__root)
-            default.set(txt_files[0])
-            drop_down = tk.OptionMenu(self.__root, default, txt_files)
-            drop_down.grid(row=2, column=1)
+            self.__default = tk.StringVar(self.__root)
+            self.__default.set(txt_files[0])
+            self.__drop_down = tk.OptionMenu(self.__root, self.__default, *txt_files)
+            self.__drop_down.grid(row=2, column=1)
+            self.__bConfirm.config(command=lambda: self.__add_to_file("drop_down"))
             self.__bConfirm.grid(row=3, column=0, columnspan=2)
         else:
             tkm.showerror("Error", "Files not found")
@@ -84,4 +85,49 @@ class EvtWindow:
         # entry with new name of file
         self.__eNewFile = tk.Entry(self.__root)
         self.__eNewFile.grid(row=2, column=1)
+        self.__bConfirm.config(command=lambda: self.__add_to_file("entry"))
         self.__bConfirm.grid(row=3, column=0, columnspan=2)
+
+    # final addition
+    def __add_to_file(self, name_source):
+        if name_source == "drop_down":
+            file_name = self.__default.get()
+            self.__lDrop_down.grid_forget()
+            self.__drop_down.grid_forget()
+            self.__bConfirm.grid_forget()
+
+        if name_source == "entry":
+            file_name = self.__eNewFile.get()
+            self.__lNewFile.grid_forget()
+            self.__eNewFile.grid_forget()
+
+        self.__lNewWord = tk.Label(text="Enter word")
+        self.__lTranslation = tk.Label(text="Enter translation")
+        self.__eNewWord = tk.Entry(self.__root)
+        self.__eTranslation = tk.Entry(self.__root)
+        self.__lNewWord.grid(row=2, column=0)
+        self.__eNewWord.grid(row=2, column=1)
+        self.__lTranslation.grid(row=3, column=0)
+        self.__eTranslation.grid(row=3, column=1)
+        self.__bConfirm.config(command=lambda: self.__put_in_file(file_name))
+        self.__bConfirm.grid(row=4, column=0, columnspan=2)
+
+    # add word to file
+    def __put_in_file(self, file_name):
+        self.__word = self.__eNewWord.get()
+        self.__translation = self.__eTranslation.get()
+        with open(file_name, 'a+') as f:
+            f.write(self.__word)
+            f.write("\n")
+            f.write(self.__translation)
+            f.write("\n")
+        self.__finish_add()
+
+    # after finishing word addition we can back to start window
+    def __finish_add(self):
+        self.__lNewWord.grid_forget()
+        self.__lTranslation.grid_forget()
+        self.__eNewWord.grid_forget()
+        self.__eTranslation.grid_forget()
+        self.__bConfirm.grid_forget()
+        self.__grid_start_window()

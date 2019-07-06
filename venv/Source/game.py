@@ -23,8 +23,38 @@ class Game:
         self.__lWordToTranslate.grid(row=1, column=1)
         self.__lAnswer.grid(row=2, column=0)
         self.__eAnswer.grid(row=2, column=1)
+        self.__lLast = tk.Label()
+        self.__lLast.grid(row=4, column=0, columnspan=2)
+        self.__lLast.config(font=("Courier", 25))
 
     def perform(self):
         # game
         for i in range(self.__number_words):
-            print(i)
+            wait_var = tk.IntVar()
+            self.__lWordToTranslate.config(text=self.__words[2*i+1])    # in every round we have to change word to ask
+            self.__bConfirm.config(command=lambda: self.__update(i, wait_var))    # function update checks answer
+            self.__bConfirm.wait_variable(wait_var)
+
+    # function to check answer and end game
+    def __update(self, i, wait):
+        if i == self.__number_words - 1:
+            self.__summary()
+        answer = self.__eAnswer.get()
+        if answer == self.__words[2*i]:
+            self.__points += 1
+            self.__lLast.config(text="Correct")
+        else:
+            self.__lLast.config(text="Mistake")
+        self.__eAnswer.delete(0, 'end')
+        wait.set(1)
+
+    def __summary(self):
+        self.__bConfirm.grid_forget()
+        self.__lLast.grid_forget()
+        self.__lTranslation.grid_forget()
+        self.__lWordToTranslate.grid_forget()
+        self.__lAnswer.grid_forget()
+        self.__eAnswer.grid_forget()
+        self.__lPoints = tk.Label(text=f'You scored {self.__points} points')
+        self.__lPoints.config(font=("Courier", 20))
+        self.__lPoints.grid(row=1, column=0, columnspan=2)

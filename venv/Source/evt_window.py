@@ -4,6 +4,9 @@ import os
 import fileOperations as fOp
 from PIL import Image, ImageTk
 
+PLAY = 0
+ADD = 1
+
 
 class EvtWindow:
 
@@ -29,13 +32,21 @@ class EvtWindow:
     # user pressed play and then has to choose file with vocabulary to be able to start game
     def __start_game(self):
         txt_files = fOp.traverse_directory()  # list of txt files with vocabulary
+        self.__txt_files_menu(txt_files, PLAY)
         self.__clear_start_window()
+
+    # user chose file with vocabulary
+
+    def __game(self):
+        self.__lDrop_down.grid_forget()
+        self.__drop_down.grid_forget()
+        self.__bConfirm.grid_forget()
 
     # user pressed add and now has to choose file and put word
     def __add_word(self):
         txt_files = fOp.traverse_directory()  # list of txt files with vocabulary
         self.__clear_start_window()
-        self.__bAddExisting = tk.Button(self.__root, text="Add to existing file", command=lambda: self.__txt_files_menu(txt_files))
+        self.__bAddExisting = tk.Button(self.__root, text="Add to existing file", command=lambda: self.__txt_files_menu(txt_files, ADD))
         self.__bAddNew = tk.Button(self.__root, text="Add to new file", command=self.__get_name)
         self.__bAddExisting.config(font=("Courier", 15))
         self.__bAddNew.config(font=("Courier", 15))
@@ -55,10 +66,11 @@ class EvtWindow:
         self.__bAdd.grid_forget()
 
     # drop down menu with txt files
-    def __txt_files_menu(self, txt_files):
+    def __txt_files_menu(self, txt_files, mode):
         # adding button not necessary
-        self.__bAddExisting.grid_forget()
-        self.__bAddNew.grid_forget()
+        if mode == ADD:
+            self.__bAddExisting.grid_forget()
+            self.__bAddNew.grid_forget()
         if txt_files is not None:
             # label with instruction
             self.__lDrop_down = tk.Label(text="Choose file")
@@ -68,7 +80,10 @@ class EvtWindow:
             self.__default.set(txt_files[0])
             self.__drop_down = tk.OptionMenu(self.__root, self.__default, *txt_files)
             self.__drop_down.grid(row=2, column=1)
-            self.__bConfirm.config(command=lambda: self.__add_to_file("drop_down"))
+            if mode == ADD:
+                self.__bConfirm.config(command=lambda: self.__add_to_file("drop_down"))
+            if mode == PLAY:
+                self.__bConfirm.config(command=self.__game)
             self.__bConfirm.grid(row=3, column=0, columnspan=2)
         else:
             tkm.showerror("Error", "Files not found")

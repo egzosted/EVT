@@ -24,3 +24,8 @@ def traverse_directory():
         get_files(dir_path, file_names, txt_files)
     return txt_files
 
+
+def get_words(file_name):
+    with open(file_name, 'r'):
+        words = [line.rstrip('\n') for line in open(file_name)]     # list of words
+    return words

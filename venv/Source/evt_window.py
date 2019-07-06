@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.messagebox as tkm
 import os
 import fileOperations as fOp
+import game as gm
 from PIL import Image, ImageTk
 
 PLAY = 0
@@ -36,11 +37,15 @@ class EvtWindow:
         self.__clear_start_window()
 
     # user chose file with vocabulary
-
     def __game(self):
+        file_name = self.__default.get()
+        self.__lFlag.grid_forget()
         self.__lDrop_down.grid_forget()
         self.__drop_down.grid_forget()
         self.__bConfirm.grid_forget()
+        words = fOp.get_words(file_name)  # getting list of words from txt_file(translation is also here)
+        game = gm.Game(words, self.__root)  # creating new object of game
+        game.perform()    # this method performs game in game object
 
     # user pressed add and now has to choose file and put word
     def __add_word(self):

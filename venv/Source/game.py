@@ -37,8 +37,6 @@ class Game:
 
     # function to check answer and end game
     def __update(self, i, wait):
-        if i == self.__number_words - 1:
-            self.__summary()
         answer = self.__eAnswer.get()
         if answer == self.__words[2*i]:
             self.__points += 1
@@ -47,6 +45,8 @@ class Game:
             self.__lLast.config(text="Mistake")
         self.__eAnswer.delete(0, 'end')
         wait.set(1)
+        if i == self.__number_words - 1:
+            self.__summary()
 
     def __summary(self):
         self.__bConfirm.grid_forget()

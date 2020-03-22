@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
-import os
 import fileOperations as fOp
 import game as gm
 from PIL import Image, ImageTk
@@ -11,8 +10,13 @@ ADD = 1
 
 class EvtWindow:
 
-    # in constructor are created start components
     def __init__(self):
+        """
+            in constructor are created start components:
+            - label with header
+            - image with flag
+            - button to start playing game and button to add file with vocabulary
+        """
         self.__root = tk.Tk()
         self.__lHeader = tk.Label(text="English Vocabulary Tester", bg="white", fg="black")
         self.__lHeader.config(font=("Courier", 25))
@@ -30,8 +34,10 @@ class EvtWindow:
         self.__grid_start_window()
         self.__root.tk.mainloop()
 
-    # user pressed play and then has to choose file with vocabulary to be able to start game
     def __start_game(self):
+        """
+            user pressed play and then has to choose file with vocabulary to be able to start game
+        """
         txt_files = fOp.traverse_directory()  # list of txt files with vocabulary
         self.__txt_files_menu(txt_files, PLAY)
         self.__clear_start_window()
@@ -43,7 +49,8 @@ class EvtWindow:
         self.__lDrop_down.grid_forget()
         self.__drop_down.grid_forget()
         self.__bConfirm.grid_forget()
-        words = fOp.get_words(file_name)  # getting list of words from txt_file(translation is also here)
+        # getting list of words from txt_file(translation is also here)
+        words = fOp.get_words(file_name)
         game = gm.Game(words, self.__root)  # creating new object of game
         game.perform()    # this method performs game in game object
 
@@ -51,22 +58,27 @@ class EvtWindow:
     def __add_word(self):
         txt_files = fOp.traverse_directory()  # list of txt files with vocabulary
         self.__clear_start_window()
-        self.__bAddExisting = tk.Button(self.__root, text="Add to existing file", command=lambda: self.__txt_files_menu(txt_files, ADD))
+        self.__bAddExisting = tk.Button(
+            self.__root, text="Add to existing file", command=lambda: self.__txt_files_menu(txt_files, ADD))
         self.__bAddNew = tk.Button(self.__root, text="Add to new file", command=self.__get_name)
         self.__bAddExisting.config(font=("Courier", 15))
         self.__bAddNew.config(font=("Courier", 15))
         self.__bAddExisting.grid(row=2, column=0, sticky="NSEW")
         self.__bAddNew.grid(row=2, column=1, sticky="NSEW")
 
-    # this method places start components in window
     def __grid_start_window(self):
+        """
+            this method places start components in window
+        """
         self.__lHeader.grid(row=0, column=0, columnspan=2)
         self.__lFlag.grid(row=1, column=0, columnspan=2)
         self.__bPlay.grid(row=2, column=0, sticky="NSEW")
         self.__bAdd.grid(row=2, column=1, sticky="NSEW")
 
-    # removing unnecessary components
     def __clear_start_window(self):
+        """
+        removing unnecessary components
+        """
         self.__bPlay.grid_forget()
         self.__bAdd.grid_forget()
 

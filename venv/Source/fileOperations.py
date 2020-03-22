@@ -1,4 +1,3 @@
-import importlib
 import magic
 import os
 
@@ -8,24 +7,25 @@ def get_files(dir_path, file_names, txt_files):
     for i in file_names:
         file_path = os.path.join(dir_path, i)   # file_path of file which extension will be found
         if os.path.exists(file_path):   # to use magic we have to know if file exists
-            # print(magic.from_file(file_path))
             file_type = magic.from_file(file_path)
-            find_py = i.find('.py')
-            # we want only ASCII text files and also we have to exclude python scripts
-            if file_type == 'ASCII text' and find_py < 0:
+            # these condition is met with different types of txt files, it can be also some scripts etc
+            if file_type.find('text') != -1:
                 txt_files.append(i)
-    return txt_files
 
 
-# this function traverse directories to find all files and then find txt
 def traverse_directory():
+    """
+        this function traverse directory called "vocabulary" to find all files and then find txt with get_files func
+    """
     txt_files = []  # list of files with vocabulary
-    for dir_path, dir_names, file_names in os.walk(os.getcwd()):  # traversing through directory
+    # traversing through directory
+    for dir_path, dir_names, file_names in os.walk('vocabulary'):
         get_files(dir_path, file_names, txt_files)
     return txt_files
 
 
 def get_words(file_name):
-    with open(file_name, 'r'):
-        words = [line.rstrip('\n') for line in open(file_name)]     # list of words
+    path = 'vocabulary/' + file_name
+    with open(path, 'r'):
+        words = [line.rstrip('\n') for line in open(path)]     # list of words
     return words

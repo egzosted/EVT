@@ -4,7 +4,8 @@ import tkinter as tk
 class Game:
     def __init__(self, words, root):
         self.__words = words    # list with vocabulary
-        self.__number_words = len(words)//2  # number of words (divided by 2 cause they are in 2 languages)
+        # number of words (divided by 2 cause they are in 2 languages)
+        self.__number_words = len(words) // 2
         self.__root = root      # gui window
         self.__round = 1
         self.__points = 0       # correct answer +1 pt
@@ -31,14 +32,16 @@ class Game:
         # game
         for i in range(self.__number_words):
             wait_var = tk.IntVar()
-            self.__lWordToTranslate.config(text=self.__words[2*i+1])    # in every round we have to change word to ask
-            self.__bConfirm.config(command=lambda: self.__update(i, wait_var))    # function update checks answer
+            # in every round we have to change word to ask
+            self.__lWordToTranslate.config(text=self.__words[2 * i + 1])
+            self.__bConfirm.config(command=lambda: self.__update(
+                i, wait_var))    # function update checks answer
             self.__bConfirm.wait_variable(wait_var)
 
     # function to check answer and end game
     def __update(self, i, wait):
         answer = self.__eAnswer.get()
-        if answer == self.__words[2*i]:
+        if answer == self.__words[2 * i]:
             self.__points += 1
             self.__lLast.config(text="Correct")
         else:

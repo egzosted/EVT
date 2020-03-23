@@ -36,6 +36,7 @@ class Game:
             self.__lWordToTranslate.config(text=self.__words[2 * i + 1])
             self.__bConfirm.config(command=lambda: self.__update(
                 i, wait_var))    # function update checks answer
+            self.__root.bind('<Return>', lambda event: self.__update(i, wait_var))
             self.__bConfirm.wait_variable(wait_var)
 
     # function to check answer and end game

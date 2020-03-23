@@ -40,7 +40,6 @@ class EvtWindow:
         """
         txt_files = fOp.traverse_directory()  # list of txt files with vocabulary
         self.__txt_files_menu(txt_files, PLAY)
-        self.__clear_start_window()
 
     # user chose file with vocabulary
     def __game(self):
@@ -88,7 +87,7 @@ class EvtWindow:
         if mode == ADD:
             self.__bAddExisting.grid_forget()
             self.__bAddNew.grid_forget()
-        if txt_files is not None:
+        if len(txt_files) > 0:
             # label with instruction
             self.__lDrop_down = tk.Label(text="Choose file")
             self.__lDrop_down.grid(row=2, column=0)
@@ -97,6 +96,7 @@ class EvtWindow:
             self.__default.set(txt_files[0])
             self.__drop_down = tk.OptionMenu(self.__root, self.__default, *txt_files)
             self.__drop_down.grid(row=2, column=1)
+            self.__clear_start_window()
             if mode == ADD:
                 self.__bConfirm.config(command=lambda: self.__add_to_file("drop_down"))
             if mode == PLAY:
@@ -148,7 +148,7 @@ class EvtWindow:
     def __put_in_file(self, file_name):
         self.__word = self.__eNewWord.get()
         self.__translation = self.__eTranslation.get()
-        with open(file_name, 'a+') as f:
+        with open('vocabulary/' + file_name, 'a+') as f:
             f.write(self.__word)
             f.write("\n")
             f.write(self.__translation)
